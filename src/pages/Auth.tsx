@@ -1,13 +1,31 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
-import { LayoutGrid, Moon, Sun } from 'lucide-react';
+import { LayoutGrid, Moon, Sun, Wallet, Target, Heart } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
+
+const features = [
+  {
+    icon: Wallet,
+    title: 'Controle Financeiro',
+    description: 'Gerencie receitas, despesas e orçamentos com clareza.',
+  },
+  {
+    icon: Target,
+    title: 'Foco & Produtividade',
+    description: 'Organize tarefas e mantenha o foco no que importa.',
+  },
+  {
+    icon: Heart,
+    title: 'Hábitos Saudáveis',
+    description: 'Construa rotinas que transformam sua vida.',
+  },
+];
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -104,75 +122,151 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen grid lg:grid-cols-2">
+      {/* Theme Toggle */}
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-4 right-4"
+        className="fixed top-4 right-4 z-50"
         onClick={toggleTheme}
       >
         {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
       </Button>
 
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-            <LayoutGrid className="h-6 w-6 text-primary" />
+      {/* Hero Section */}
+      <div className="relative flex flex-col justify-center px-8 py-12 lg:px-16 bg-gradient-to-br from-primary/5 via-background to-primary/10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--primary)/0.08),transparent_50%)]" />
+        
+        <div className="relative z-10 max-w-lg mx-auto lg:mx-0 animate-fade-in">
+          {/* Logo */}
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+              <LayoutGrid className="h-6 w-6 text-primary" />
+            </div>
+            <span className="text-2xl font-bold tracking-tight">Life OS</span>
           </div>
-          <CardTitle className="text-2xl">
-            {isLogin ? 'Entrar no Life OS' : 'Criar Conta'}
-          </CardTitle>
-          <CardDescription>
-            {isLogin
-              ? 'Acesse seu painel para organizar finanças, foco e rotina'
-              : 'Crie sua conta para começar a usar o Life OS'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-              />
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete={isLogin ? 'current-password' : 'new-password'}
-              />
-            </div>
+          {/* Headline */}
+          <h1 className="text-4xl lg:text-5xl font-bold tracking-tight mb-4 text-foreground">
+            Organize sua vida.
+            <br />
+            <span className="text-primary">Simplifique seu dia.</span>
+          </h1>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Carregando...' : isLogin ? 'Entrar' : 'Criar Conta'}
-            </Button>
+          <p className="text-lg text-muted-foreground mb-12 max-w-md">
+            Uma plataforma integrada para gerenciar finanças, produtividade e bem-estar em um só lugar.
+          </p>
 
-            <div className="text-center text-sm">
-              <span className="text-muted-foreground">
-                {isLogin ? 'Não tem uma conta?' : 'Já tem uma conta?'}
-              </span>{' '}
+          {/* Features */}
+          <div className="space-y-6">
+            {features.map((feature, index) => (
+              <div
+                key={feature.title}
+                className="flex items-start gap-4 animate-fade-in"
+                style={{ animationDelay: `${(index + 1) * 100}ms` }}
+              >
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <feature.icon className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Auth Section */}
+      <div className="flex items-center justify-center px-8 py-12 lg:px-16 bg-background">
+        <Card className="w-full max-w-md border-0 shadow-xl bg-card/50 backdrop-blur-sm animate-scale-in">
+          <CardContent className="pt-8 pb-8 px-8">
+            {/* Tabs */}
+            <div className="flex mb-8 p-1 bg-muted rounded-lg">
               <button
                 type="button"
-                className="text-primary hover:underline font-medium"
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={() => setIsLogin(true)}
+                className={`flex-1 py-2.5 text-sm font-medium rounded-md transition-all ${
+                  isLogin
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
               >
-                {isLogin ? 'Criar conta' : 'Fazer login'}
+                Entrar
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsLogin(false)}
+                className={`flex-1 py-2.5 text-sm font-medium rounded-md transition-all ${
+                  !isLogin
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Criar Conta
               </button>
             </div>
-          </form>
-        </CardContent>
-      </Card>
+
+            {/* Title */}
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold mb-2">
+                {isLogin ? 'Bem-vindo de volta' : 'Crie sua conta'}
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                {isLogin
+                  ? 'Entre para acessar seu painel'
+                  : 'Comece a organizar sua vida hoje'}
+              </p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  className="h-11"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm font-medium">
+                  Senha
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete={isLogin ? 'current-password' : 'new-password'}
+                  className="h-11"
+                />
+              </div>
+
+              <Button type="submit" className="w-full h-11 text-base font-medium" disabled={isLoading}>
+                {isLoading ? 'Carregando...' : isLogin ? 'Entrar' : 'Criar Conta'}
+              </Button>
+            </form>
+
+            {/* Footer */}
+            <p className="text-center text-xs text-muted-foreground mt-8">
+              Ao continuar, você concorda com nossos{' '}
+              <span className="text-primary hover:underline cursor-pointer">Termos de Uso</span>
+              {' '}e{' '}
+              <span className="text-primary hover:underline cursor-pointer">Política de Privacidade</span>
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
