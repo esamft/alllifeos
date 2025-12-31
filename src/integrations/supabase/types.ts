@@ -38,6 +38,51 @@ export type Database = {
         }
         Relationships: []
       }
+      focus_tasks: {
+        Row: {
+          area: string
+          created_at: string
+          energy_type: string
+          id: string
+          pomodoro_estimate: number
+          priority: string
+          scheduled_date: string | null
+          scheduled_time: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          area?: string
+          created_at?: string
+          energy_type?: string
+          id?: string
+          pomodoro_estimate?: number
+          priority?: string
+          scheduled_date?: string | null
+          scheduled_time?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          area?: string
+          created_at?: string
+          energy_type?: string
+          id?: string
+          pomodoro_estimate?: number
+          priority?: string
+          scheduled_date?: string | null
+          scheduled_time?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
