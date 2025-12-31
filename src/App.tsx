@@ -9,6 +9,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Home from "./pages/Home";
 import Finance from "./pages/Finance";
 import Focus from "./pages/Focus";
+import Investments from "./pages/Investments";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -28,6 +29,7 @@ const App = () => (
                 <Route path="/" element={<Home />} />
                 <Route path="/finance" element={<Finance />} />
                 <Route path="/focus" element={<Focus />} />
+                <Route path="/investments" element={<Investments />} />
               </Route>
               {/* Public routes */}
               <Route path="/auth" element={<Auth />} />
