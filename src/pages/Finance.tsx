@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { format, startOfMonth, endOfMonth, parseISO } from 'date-fns';
-import { Header } from '@/components/finance/Header';
+import { ptBR } from 'date-fns/locale';
+import { Settings } from 'lucide-react';
 import { BigNumbers } from '@/components/finance/BigNumbers';
 import { CategoryProgress } from '@/components/finance/CategoryProgress';
 import { RecentTransactions } from '@/components/finance/RecentTransactions';
@@ -10,9 +11,10 @@ import { CategoryManagement } from '@/components/finance/CategoryManagement';
 import { useCategories } from '@/hooks/useCategories';
 import { useTransactions } from '@/hooks/useTransactions';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 
-export default function Dashboard() {
+export default function Finance() {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [categoriesModalOpen, setCategoriesModalOpen] = useState(false);
 
@@ -75,15 +77,26 @@ export default function Dashboard() {
 
   const isLoading = categoriesLoading || transactionsLoading;
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Header onOpenCategories={() => setCategoriesModalOpen(true)} />
+  const formattedMonth = format(now, 'MMMM yyyy', { locale: ptBR });
+  const capitalizedMonth = formattedMonth.charAt(0).toUpperCase() + formattedMonth.slice(1);
 
-      <main className="container mx-auto px-4 py-6 pb-24 space-y-6">
+  return (
+    <div className="min-h-full bg-background">
+      <div className="container mx-auto px-4 py-6 pb-24 space-y-6 max-w-5xl">
+        {/* Breadcrumb and Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-muted-foreground mb-1">Início / Finanças</p>
+            <h1 className="text-2xl font-bold">Gestão Financeira</h1>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => setCategoriesModalOpen(true)}>
+            <Settings className="h-4 w-4 mr-2" />
+            Categorias
+          </Button>
+        </div>
+
         {/* Month indicator */}
-        <p className="text-sm text-muted-foreground">
-          {format(now, 'MMMM yyyy').charAt(0).toUpperCase() + format(now, 'MMMM yyyy').slice(1)}
-        </p>
+        <p className="text-sm text-muted-foreground">{capitalizedMonth}</p>
 
         {isLoading ? (
           <div className="space-y-6">
@@ -111,7 +124,7 @@ export default function Dashboard() {
             />
           </>
         )}
-      </main>
+      </div>
 
       <FloatingActionButton onClick={() => setAddModalOpen(true)} />
 

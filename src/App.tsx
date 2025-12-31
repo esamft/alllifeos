@@ -5,7 +5,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
-import Index from "./pages/Index";
+import { AppLayout } from "@/components/layout/AppLayout";
+import Home from "./pages/Home";
+import Finance from "./pages/Finance";
+import Focus from "./pages/Focus";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -20,9 +23,14 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Index />} />
+              {/* Protected routes with AppLayout */}
+              <Route element={<AppLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/finance" element={<Finance />} />
+                <Route path="/focus" element={<Focus />} />
+              </Route>
+              {/* Public routes */}
               <Route path="/auth" element={<Auth />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
