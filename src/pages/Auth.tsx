@@ -6,24 +6,24 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
-import { LayoutGrid, Moon, Sun, Wallet, Target, Heart } from 'lucide-react';
+import { LayoutGrid, Moon, Sun, Wallet, Calendar, TrendingUp } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 
 const features = [
   {
     icon: Wallet,
-    title: 'Controle Financeiro',
-    description: 'Gerencie receitas, despesas e orçamentos com clareza.',
+    title: 'Gastos Mensais',
+    description: 'Controle suas despesas e mantenha seu orçamento em dia.',
   },
   {
-    icon: Target,
-    title: 'Foco & Produtividade',
-    description: 'Organize tarefas e mantenha o foco no que importa.',
+    icon: Calendar,
+    title: 'Agenda e Produtividade',
+    description: 'Organize tarefas, planeje seu dia e mantenha o foco.',
   },
   {
-    icon: Heart,
-    title: 'Hábitos Saudáveis',
-    description: 'Construa rotinas que transformam sua vida.',
+    icon: TrendingUp,
+    title: 'Investimentos',
+    description: 'Acompanhe e gerencie seus investimentos com clareza.',
   },
 ];
 
@@ -154,7 +154,7 @@ export default function Auth() {
           </h1>
 
           <p className="text-lg text-muted-foreground mb-12 max-w-md">
-            Uma plataforma integrada para gerenciar finanças, produtividade e bem-estar em um só lugar.
+            Uma plataforma integrada para gerenciar gastos, produtividade e investimentos em um só lugar.
           </p>
 
           {/* Features */}
