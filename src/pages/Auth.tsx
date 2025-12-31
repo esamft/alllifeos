@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
-import { Wallet, Moon, Sun } from 'lucide-react';
+import { LayoutGrid, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 
 export default function Auth() {
@@ -16,13 +16,16 @@ export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+
+  const from = (location.state as { from?: string })?.from ?? '/';
 
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate(from, { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, from]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +72,7 @@ export default function Auth() {
             title: 'Bem-vindo de volta!',
             description: 'Login realizado com sucesso.',
           });
-          navigate('/');
+          navigate(from, { replace: true });
         }
       } else {
         const { error } = await signUp(email, password);
@@ -90,9 +93,9 @@ export default function Auth() {
         } else {
           toast({
             title: 'Conta criada!',
-            description: 'Você já pode começar a usar o app.',
+            description: 'Você já pode começar a usar o Life OS.',
           });
-          navigate('/');
+          navigate(from, { replace: true });
         }
       }
     } finally {
@@ -114,15 +117,15 @@ export default function Auth() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-            <Wallet className="h-6 w-6 text-primary" />
+            <LayoutGrid className="h-6 w-6 text-primary" />
           </div>
           <CardTitle className="text-2xl">
-            {isLogin ? 'Entrar' : 'Criar Conta'}
+            {isLogin ? 'Entrar no Life OS' : 'Criar Conta'}
           </CardTitle>
           <CardDescription>
             {isLogin
-              ? 'Acesse sua conta para gerenciar suas finanças'
-              : 'Crie uma conta para começar a controlar seus gastos'}
+              ? 'Acesse seu painel para organizar finanças, foco e rotina'
+              : 'Crie sua conta para começar a usar o Life OS'}
           </CardDescription>
         </CardHeader>
         <CardContent>
