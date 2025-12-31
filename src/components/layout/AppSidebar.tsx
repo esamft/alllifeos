@@ -1,4 +1,4 @@
-import { Home, Wallet, Calendar, Settings, LogOut, Moon, Sun } from 'lucide-react';
+import { Home, Wallet, Calendar, TrendingUp, LogOut, Moon, Sun } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { NavLink } from '@/components/NavLink';
 import { useTheme } from '@/hooks/useTheme';
@@ -22,6 +22,7 @@ const navItems = [
   { title: 'Início', url: '/', icon: Home },
   { title: 'Finanças', url: '/finance', icon: Wallet },
   { title: 'Agenda', url: '/focus', icon: Calendar },
+  { title: 'Investimentos', url: '/investments', icon: TrendingUp },
 ];
 
 export function AppSidebar() {

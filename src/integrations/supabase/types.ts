@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      assets: {
+        Row: {
+          bucket_id: string
+          id: string
+          is_manual: boolean | null
+          last_price_fetch: number | null
+          manual_price: number | null
+          name: string | null
+          quantity: number
+          target_percentage_in_bucket: number | null
+          ticker: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bucket_id: string
+          id?: string
+          is_manual?: boolean | null
+          last_price_fetch?: number | null
+          manual_price?: number | null
+          name?: string | null
+          quantity?: number
+          target_percentage_in_bucket?: number | null
+          ticker: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bucket_id?: string
+          id?: string
+          is_manual?: boolean | null
+          last_price_fetch?: number | null
+          manual_price?: number | null
+          name?: string | null
+          quantity?: number
+          target_percentage_in_bucket?: number | null
+          ticker?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assets_bucket_id_fkey"
+            columns: ["bucket_id"]
+            isOneToOne: false
+            referencedRelation: "investment_buckets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           budget_limit: number | null
@@ -79,6 +129,30 @@ export type Database = {
           status?: string
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      investment_buckets: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          target_percentage: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          target_percentage?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          target_percentage?: number
           user_id?: string
         }
         Relationships: []
