@@ -64,9 +64,46 @@ export type Database = {
           },
         ]
       }
+      budget_config: {
+        Row: {
+          base_income: number
+          created_at: string
+          essentials_percentage: number
+          free_spending_amount: number
+          id: string
+          investment_percentage: number
+          lifestyle_percentage: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          base_income?: number
+          created_at?: string
+          essentials_percentage?: number
+          free_spending_amount?: number
+          id?: string
+          investment_percentage?: number
+          lifestyle_percentage?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          base_income?: number
+          created_at?: string
+          essentials_percentage?: number
+          free_spending_amount?: number
+          id?: string
+          investment_percentage?: number
+          lifestyle_percentage?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           budget_limit: number | null
+          category_group: string | null
           created_at: string
           id: string
           name: string
@@ -74,6 +111,7 @@ export type Database = {
         }
         Insert: {
           budget_limit?: number | null
+          category_group?: string | null
           created_at?: string
           id?: string
           name: string
@@ -81,6 +119,7 @@ export type Database = {
         }
         Update: {
           budget_limit?: number | null
+          category_group?: string | null
           created_at?: string
           id?: string
           name?: string
