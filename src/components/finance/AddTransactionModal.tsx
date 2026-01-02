@@ -8,13 +8,15 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { CalendarIcon, Check, ChevronsUpDown, Plus } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { CalendarIcon, Check, ChevronsUpDown, Plus, Home, Sparkles } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Category, useCategories } from '@/hooks/useCategories';
 import { useTransactions } from '@/hooks/useTransactions';
 import { toast } from '@/hooks/use-toast';
+import { CATEGORY_GROUP_LABELS } from '@/lib/budget-constants';
 
 interface AddTransactionModalProps {
   open: boolean;
@@ -231,14 +233,27 @@ export function AddTransactionModal({ open, onOpenChange }: AddTransactionModalP
                             setCategoryPopoverOpen(false);
                             setCategorySearch('');
                           }}
+                          className="flex items-center justify-between"
                         >
-                          <Check
-                            className={cn(
-                              'mr-2 h-4 w-4',
-                              categoryId === category.id ? 'opacity-100' : 'opacity-0'
-                            )}
-                          />
-                          {category.name}
+                          <div className="flex items-center">
+                            <Check
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                categoryId === category.id ? 'opacity-100' : 'opacity-0'
+                              )}
+                            />
+                            {category.name}
+                          </div>
+                          {category.category_group && (
+                            <Badge variant="outline" className="ml-2 text-xs py-0 px-1.5">
+                              {category.category_group === 'essenciais' ? (
+                                <Home className="h-3 w-3 mr-1" />
+                              ) : (
+                                <Sparkles className="h-3 w-3 mr-1" />
+                              )}
+                              {CATEGORY_GROUP_LABELS[category.category_group]}
+                            </Badge>
+                          )}
                         </CommandItem>
                       ))}
                     </CommandGroup>
