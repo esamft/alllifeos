@@ -1,9 +1,11 @@
 import { useState, useMemo } from 'react';
-import { format, startOfMonth, endOfMonth, parseISO, getDate } from 'date-fns';
+import { format, startOfMonth, endOfMonth, parseISO, getDate, getDaysInMonth } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Settings } from 'lucide-react';
-import { InvestmentGoalTracker } from '@/components/finance/InvestmentGoalTracker';
-import { CreditCardMonitor } from '@/components/finance/CreditCardMonitor';
+import { BudgetSummaryCards } from '@/components/finance/BudgetSummaryCards';
+import { SpendingPieChart } from '@/components/finance/SpendingPieChart';
+import { SpendingByGroupChart } from '@/components/finance/SpendingByGroupChart';
+import { MonthlyTrendChart } from '@/components/finance/MonthlyTrendChart';
 import { ExpenseContainer } from '@/components/finance/ExpenseContainer';
 import { WeeklyAllowance } from '@/components/finance/WeeklyAllowance';
 import { RecentTransactions } from '@/components/finance/RecentTransactions';
@@ -16,7 +18,6 @@ import { useBudgetConfig } from '@/hooks/useBudgetConfig';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
-import { BUDGET_CONSTANTS } from '@/lib/budget-constants';
 
 export default function Finance() {
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -24,7 +25,7 @@ export default function Finance() {
 
   const { categories, essentialsCategories, lifestyleCategories, isLoading: categoriesLoading } = useCategories();
   const { transactions, isLoading: transactionsLoading, deleteTransaction } = useTransactions();
-  const { investmentTarget, essentialsCap, lifestyleCap, isLoading: configLoading } = useBudgetConfig();
+  const { essentialsCap, lifestyleCap, isLoading: configLoading } = useBudgetConfig();
 
   // Current month boundaries
   const now = new Date();
@@ -40,13 +41,6 @@ export default function Finance() {
       return txDate >= monthStart && txDate <= monthEnd;
     });
   }, [transactions, monthStart, monthEnd]);
-
-  // Calculate credit card spending (for Semáforo)
-  const creditCardSpending = useMemo(() => {
-    return currentMonthTransactions
-      .filter((tx) => tx.transaction_type === 'credit_card')
-      .reduce((sum, tx) => sum + Number(tx.amount), 0);
-  }, [currentMonthTransactions]);
 
   // Calculate free spending (Gastos Livres category)
   const freeSpendingThisMonth = useMemo(() => {
@@ -89,6 +83,29 @@ export default function Finance() {
     });
   }, [lifestyleCategories, currentMonthTransactions]);
 
+  // Calculate totals for summary cards
+  const totalSpent = useMemo(() => {
+    return currentMonthTransactions.reduce((sum, tx) => sum + Number(tx.amount), 0);
+  }, [currentMonthTransactions]);
+
+  const totalBudget = essentialsCap + lifestyleCap;
+
+  const essentialsSpent = useMemo(() => {
+    return essentialsCategoryProgress.reduce((sum, cat) => sum + cat.spent, 0);
+  }, [essentialsCategoryProgress]);
+
+  const lifestyleSpent = useMemo(() => {
+    return lifestyleCategoryProgress.reduce((sum, cat) => sum + cat.spent, 0);
+  }, [lifestyleCategoryProgress]);
+
+  // Data for pie charts
+  const allCategorySpending = useMemo(() => {
+    return [
+      ...essentialsCategoryProgress.map(c => ({ ...c, group: 'essenciais' as const })),
+      ...lifestyleCategoryProgress.map(c => ({ ...c, group: 'estilo_de_vida' as const })),
+    ];
+  }, [essentialsCategoryProgress, lifestyleCategoryProgress]);
+
   const handleDeleteTransaction = async (id: string) => {
     try {
       await deleteTransaction.mutateAsync(id);
@@ -112,12 +129,12 @@ export default function Finance() {
 
   return (
     <div className="min-h-full bg-background">
-      <div className="container mx-auto px-4 py-6 pb-24 space-y-6 max-w-5xl">
+      <div className="container mx-auto px-4 py-6 pb-24 space-y-6 max-w-6xl">
         {/* Breadcrumb and Header */}
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-muted-foreground mb-1">Início / Finanças</p>
-            <h1 className="text-2xl font-bold">Orçamento 2026 - Perfil Atleta</h1>
+            <h1 className="text-2xl font-bold">Orçamento</h1>
           </div>
           <Button variant="outline" size="sm" onClick={() => setCategoriesModalOpen(true)}>
             <Settings className="h-4 w-4 mr-2" />
@@ -130,9 +147,11 @@ export default function Finance() {
 
         {isLoading ? (
           <div className="space-y-6">
-            <div className="grid gap-4 md:grid-cols-2">
-              <Skeleton className="h-40" />
-              <Skeleton className="h-40" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <Skeleton className="h-20" />
+              <Skeleton className="h-20" />
+              <Skeleton className="h-20" />
+              <Skeleton className="h-20" />
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               <Skeleton className="h-64" />
@@ -142,18 +161,26 @@ export default function Finance() {
           </div>
         ) : (
           <>
-            {/* Row 1: Investment Goal + Credit Card Monitor */}
+            {/* Row 1: Summary Cards */}
+            <BudgetSummaryCards
+              totalSpent={totalSpent}
+              totalBudget={totalBudget}
+              daysPassed={currentDay}
+            />
+
+            {/* Row 2: Pie Charts */}
             <div className="grid gap-4 md:grid-cols-2">
-              <InvestmentGoalTracker 
-                investedAmount={0} 
-                targetAmount={investmentTarget}
+              <SpendingByGroupChart
+                essentialsSpent={essentialsSpent}
+                lifestyleSpent={lifestyleSpent}
               />
-              <CreditCardMonitor 
-                totalCreditCardSpending={creditCardSpending}
-              />
+              <SpendingPieChart categories={allCategorySpending} />
             </div>
 
-            {/* Row 2: Expense Containers */}
+            {/* Row 3: Weekly Trend */}
+            <MonthlyTrendChart transactions={currentMonthTransactions} />
+
+            {/* Row 4: Expense Containers */}
             <div className="grid gap-4 md:grid-cols-2">
               <ExpenseContainer 
                 group="essenciais"
@@ -173,7 +200,7 @@ export default function Finance() {
               </div>
             </div>
 
-            {/* Row 3: Recent Transactions */}
+            {/* Row 5: Recent Transactions */}
             <RecentTransactions
               transactions={transactions}
               onDelete={handleDeleteTransaction}
