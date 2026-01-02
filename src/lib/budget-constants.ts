@@ -1,4 +1,4 @@
-// Orçamento 2026 - Perfil Atleta
+// Orçamento 2026
 // Regra 40/20/40
 
 export const BUDGET_CONSTANTS = {
